@@ -1,6 +1,14 @@
 bindAddress: '::'
 bindPort: 8080
-httpGateway: {}
+httpGateway: 
+ options:
+      waf:
+        customInterventionMessage: ModSecurity intervention! Custom message details here..
+        ruleSets:
+        - ruleStr: |
+            # Turn rule engine on
+            SecRuleEngine On
+            SecRule REQUEST_HEADERS:User-Agent "scammer" "deny,status:403,id:107,phase:1,msg:'blocked scammer'"
 metadata:
   annotations:
     origin: default
