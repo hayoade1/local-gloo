@@ -1,0 +1,49 @@
+apiVersion: gateway.solo.io/v1
+kind: VirtualService
+metadata:
+  name: tiredful
+  namespace: gloo-system
+  virtualHost:
+    domains:
+    - '*'
+    options:
+      waf:
+        coreRuleSet:
+          customSettingsString: |
+            # default rules section
+            SecRuleEngine On
+            SecRequestBodyAccess On
+            # CRS section
+            # Will block by default
+            SecDefaultAction "phase:1,log,auditlog,deny,status:403"
+            SecDefaultAction "phase:2,log,auditlog,deny,status:403"
+            # only allow http2 connections
+            SecAction \
+              "id:900230,\
+                phase:1,\
+                nolog,\
+                pass,\
+                t:none,\
+                setvar:'tx.allowed_http_versions=HTTP/2 HTTP/2.0'"
+            SecAction \
+            "id:900990,\
+              phase:1,\
+              nolog,\
+              pass,\
+              t:none,\
+                  setvar:tx.crs_setup_version=310"
+    routes:
+    - matchers:
+      - prefix: /
+      options:
+        autoHostRewrite: true
+      routeAction:
+        single:
+          upstream:
+            name: tiredful
+            namespace: gloo-system
+status:
+  reportedBy: gateway
+  state: 1
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy': {}
