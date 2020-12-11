@@ -1,9 +1,15 @@
-apiVersion: gateway.solo.io/v1
-kind: VirtualService
 metadata:
-  name: tiredful
+  name: default
   namespace: gloo-system
-  virtualHost:
+  resourceVersion: "24"
+status:
+  reportedBy: gateway
+  state: Accepted
+  subresourceStatuses:
+    '*v1.Proxy.gloo-system.gateway-proxy':
+      reportedBy: gloo
+      state: Accepted
+virtualHost:
     domains:
     - '*'
     options:
@@ -31,7 +37,7 @@ metadata:
               nolog,\
               pass,\
               t:none,\
-                  setvar:tx.crs_setup_version=310"
+                  setvar:tx.crs_setup_version=310"  
     routes:
     - matchers:
       - prefix: /
