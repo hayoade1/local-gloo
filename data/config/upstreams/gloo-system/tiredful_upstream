@@ -1,9 +1,14 @@
-apiVersion: gateway.solo.io/v1
-kind: VirtualService
 metadata:
   name: tiredful
   namespace: gloo-system
-spec:
+  resourceVersion: "4"
+static:
+  hosts:
+  - addr: <enter address of tiredfulapp>
+    port: 8000
+status:
+  reportedBy: gloo
+  state: Accepted
   virtualHost:
     domains:
       - '*'
